@@ -1,5 +1,9 @@
 #include <math.h>
 #include <iostream>
+#include "math/vec3.h"
+#include "math/vec4.h"
+#include "math/quat.h"
+#include "math/transform.h"
 using namespace std;
 
 #define GLFW_INCLUDE_GLU
