@@ -19,7 +19,7 @@ Draw::~Draw()
 
 void Draw::init()
 {
-	skel = new Skel("res/C1428827.skel");
+	skel = new Skel("res/6BE9F32A.skel");
 	skel->showHeadInfo();
 	skel->initWorldSpace(0);
 }

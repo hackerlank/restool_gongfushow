@@ -71,8 +71,8 @@ Skel::Skel(const char* filename)
 			m_file.read((char *)&bone.rotat, sizeof(bone.rotat));
 			m_file.read((char *)&bone.mirror, sizeof(bone.mirror));
 			frame.boneDatas.push_back(bone);
-			cout << "frame[" << i << "]" << "bone[" << j << "]trans " << bone.trans.x << " " << bone.trans.y << " " << bone.trans.z << " " << (int)bone.mirror << endl;
-			cout << "frame[" << i << "]" << "bone[" << j << "]rotat" << bone.rotat.x << " " << bone.rotat.y << " " << bone.rotat.z << " " << bone.rotat.w << endl;
+			//cout << "frame[" << i << "]" << "bone[" << j << "]trans " << bone.trans.x << " " << bone.trans.y << " " << bone.trans.z << " " << (int)bone.mirror << endl;
+			//cout << "frame[" << i << "]" << "bone[" << j << "]rotat" << bone.rotat.x << " " << bone.rotat.y << " " << bone.rotat.z << " " << bone.rotat.w << endl;
 		}
 
 		m_file.read((char *)&frame.time, sizeof(frame.time));

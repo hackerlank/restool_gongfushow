@@ -3,10 +3,6 @@
 
 #include "define.h"
 #include "utMath.h"
-#include "math/vec3.h"
-#include "math/vec4.h"
-#include "math/quat.h"
-#include "math/transform.h"
 
 
 #pragma pack(4)
