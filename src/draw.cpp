@@ -31,27 +31,25 @@ void Draw::update(double dt)
 
 void Draw::render()
 {
-	glColor3f(0.0f, 1.0f, 0.0f);	
+	glColor3f(1.0f, 1.0f, 1.0f);	
 	drawAxes();
 
 	for(int i = 0; i < skel->m_info.boneNames.size(); i ++)
 	{
 		Matrix4f trans = skel->getWorldSpace(i);
 		Vec3f pos(0, 0, 0);
-		pos = trans * pos/200;
+		pos = trans * pos/100;
 
-		//glColor3f(0.0f, 1.0f, 1.0f);	
-		//drawCube(pos.x, pos.y, pos.z, 10);
 		
-		//glColor3f(1.0f, 0.0f, 0.0f);	
-		//drawCube(pos.x, pos.y, pos.z, 0.1);
+		glColor3f(1.0f, 0.0f, 0.0f);	
+		drawCube(pos.x, pos.y, pos.z, 0.01);
 
 		BoneData data = skel->m_frames[0].boneDatas[i];
 		for(int j = 0; j < data.children.size(); j ++)
 		{
 			Matrix4f ctrans = skel->getWorldSpace(data.children[j]);
 			Vec3f cpos(0, 0, 0);
-			cpos = ctrans * cpos/200;
+			cpos = ctrans * cpos/100;
 		
 			glColor3f(0.0f, 1.0f, 0.0f);	
 			drawLine(pos.x, pos.y, pos.z, cpos.x, cpos.y, cpos.z);

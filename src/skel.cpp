@@ -71,7 +71,8 @@ Skel::Skel(const char* filename)
 			m_file.read((char *)&bone.rotat, sizeof(bone.rotat));
 			m_file.read((char *)&bone.mirror, sizeof(bone.mirror));
 			frame.boneDatas.push_back(bone);
-			cout << "frame[" << i << "]" << "bone[" << j << "]" << bone.trans.x << " " << bone.trans.y << " " << bone.trans.z << " " << (int)bone.mirror << endl;
+			cout << "frame[" << i << "]" << "bone[" << j << "]trans " << bone.trans.x << " " << bone.trans.y << " " << bone.trans.z << " " << (int)bone.mirror << endl;
+			cout << "frame[" << i << "]" << "bone[" << j << "]rotat" << bone.rotat.x << " " << bone.rotat.y << " " << bone.rotat.z << " " << bone.rotat.w << endl;
 		}
 
 		m_file.read((char *)&frame.time, sizeof(frame.time));
@@ -110,7 +111,6 @@ void Skel::initWorldSpace(int frameId)
 }
 void Skel::initWorldSpace(int frameId, int boneId)
 {
-	cout << "init world space " << dec << frameId << " " << boneId << endl;
 	if(frameId >= m_frames.size())
 		return;
 	SkelFrame frame = m_frames[frameId];
@@ -127,11 +127,11 @@ void Skel::initWorldSpace(int frameId, int boneId)
 	Matrix4f scale = Matrix4f::ScaleMat(scaleK, scaleK, scaleK);
 
 	Matrix4f world;
-	world = world * rotat;
-	world = world * trans;
+	world = rotat * world;
+	world = trans * world;
 
 	if(data.parent != -1)
-		world = world * getWorldSpace(data.parent);
+		world = getWorldSpace(data.parent) * world;
 
 	world = world * scale;
 
