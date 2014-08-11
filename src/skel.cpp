@@ -98,6 +98,59 @@ Skel::~Skel()
 	m_file.close();
 }
 
+void Skel::initWorldSpace(int frameId)
+{
+	m_worlds.clear();
+	m_worlds.resize(m_info.boneNames.size());
+	for(int i = 0; i < m_info.boneRoots.size(); i++)
+	{
+		initWorldSpace(frameId, m_info.boneRoots[i]);
+	}
+
+}
+void Skel::initWorldSpace(int frameId, int boneId)
+{
+	cout << "init world space " << dec << frameId << " " << boneId << endl;
+	if(frameId >= m_frames.size())
+		return;
+	SkelFrame frame = m_frames[frameId];
+	if(boneId >= frame.boneDatas.size())
+		return;
+
+	BoneData data = frame.boneDatas[boneId];
+	float scaleK = 1.0f;
+	if(data.mirror)
+		scaleK = -scaleK;
+
+	Matrix4f rotat(Quaternion(data.rotat.x, data.rotat.y, data.rotat.z, data.rotat.w));
+	Matrix4f trans = Matrix4f::TransMat(data.trans.x, data.trans.y, data.trans.z);
+	Matrix4f scale = Matrix4f::ScaleMat(scaleK, scaleK, scaleK);
+
+	Matrix4f world;
+	world = world * rotat;
+	world = world * trans;
+
+	if(data.parent != -1)
+		world = world * getWorldSpace(data.parent);
+
+	world = world * scale;
+
+	m_worlds[boneId] = new Matrix4f(world);
+
+	for(int i = 0; i < data.children.size(); i ++)
+		initWorldSpace(frameId, data.children[i]);
+}
+
+Matrix4f Skel::getWorldSpace(int boneId)
+{
+	if(boneId >= m_worlds.size())
+	{
+		Matrix4f tt;
+		return tt;
+	}
+	else
+		return *m_worlds[boneId];
+}
 
 void Skel::showHeadInfo()
 {

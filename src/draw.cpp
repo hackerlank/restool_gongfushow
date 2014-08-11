@@ -9,13 +9,19 @@ Draw::Draw()
 
 Draw::~Draw()
 {
-
+	if(skel)
+	{
+		delete skel;
+		skel = NULL;
+	}
 }
 
 
 void Draw::init()
 {
-
+	skel = new Skel("res/C1428827.skel");
+	skel->showHeadInfo();
+	skel->initWorldSpace(0);
 }
 
 void Draw::update(double dt)
@@ -28,11 +34,31 @@ void Draw::render()
 	glColor3f(0.0f, 1.0f, 0.0f);	
 	drawAxes();
 
-	glColor3f(0.0f, 1.0f, 1.0f);	
-	drawCube(0, 0, 0, 0.1);
-	
-	glColor3f(1.0f, 0.0f, 0.0f);	
-	drawSphere(0, 0, 0, 0.2, 10, 10);
+	for(int i = 0; i < skel->m_info.boneNames.size(); i ++)
+	{
+		Matrix4f trans = skel->getWorldSpace(i);
+		Vec3f pos(0, 0, 0);
+		pos = trans * pos/200;
+
+		//glColor3f(0.0f, 1.0f, 1.0f);	
+		//drawCube(pos.x, pos.y, pos.z, 10);
+		
+		//glColor3f(1.0f, 0.0f, 0.0f);	
+		//drawCube(pos.x, pos.y, pos.z, 0.1);
+
+		BoneData data = skel->m_frames[0].boneDatas[i];
+		for(int j = 0; j < data.children.size(); j ++)
+		{
+			Matrix4f ctrans = skel->getWorldSpace(data.children[j]);
+			Vec3f cpos(0, 0, 0);
+			cpos = ctrans * cpos/200;
+		
+			glColor3f(0.0f, 1.0f, 0.0f);	
+			drawLine(pos.x, pos.y, pos.z, cpos.x, cpos.y, cpos.z);
+
+		}
+
+	}
 }
 
 void Draw::drawAxes()
@@ -47,7 +73,16 @@ void Draw::drawAxes()
 	glEnd();	
 }
 
-void Draw::drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat ll)
+void Draw::drawLine(float x1, float y1, float z1, float x2, float y2, float z2)
+{
+	glBegin(GL_LINES);
+	glVertex3f(x1, y1, z1);
+	glVertex3f(x2, y2, z2);
+	glEnd();	
+
+}
+
+void Draw::drawCube(float x, float y, float z, float ll)
 {
 
 	//glBegin(GL_QUADS);					    // 开始绘制立方体
@@ -95,7 +130,7 @@ void Draw::drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat ll)
 }
 
 //球心坐标为（x，y，z），球的半径为radius，M，N分别表示球体的横纵向被分成多少份
-void Draw::drawSphere(GLfloat xx, GLfloat yy, GLfloat zz, GLfloat radius, GLuint M, GLuint N)
+void Draw::drawSphere(float xx, float yy, float zz, float radius, int M, int N)
 {
     float step_z = PI/M;
     float step_xy = 2*PI/N;

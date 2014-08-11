@@ -2,6 +2,12 @@
 #define __SKEL_H__
 
 #include "define.h"
+#include "utMath.h"
+#include "math/vec3.h"
+#include "math/vec4.h"
+#include "math/quat.h"
+#include "math/transform.h"
+
 
 #pragma pack(4)
 
@@ -65,6 +71,9 @@ public:
 
 	void showHeadInfo();
 
+	void initWorldSpace(int frameId);
+	void initWorldSpace(int frameId, int boneId);
+	Matrix4f getWorldSpace(int boneId);
 public:
 	char 	 m_path[255];
 	ifstream m_file;
@@ -72,8 +81,9 @@ public:
 	SkelHead m_head;
 	SkelInfo m_info;
 
-	int		 m_frameNum;
 	vector<SkelFrame> m_frames;
+
+	vector<Matrix4f*> m_worlds;
 };
 
 

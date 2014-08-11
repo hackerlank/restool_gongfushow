@@ -5,10 +5,6 @@
 
 #include "define.h"
 #include "skel.h"
-#include "math/vec3.h"
-#include "math/vec4.h"
-#include "math/quat.h"
-#include "math/transform.h"
 
 class Draw
 {
@@ -22,8 +18,9 @@ public:
 	void render();
 
 	void drawAxes();
-	void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat ll);
-    void drawSphere(GLfloat xx, GLfloat yy, GLfloat zz, GLfloat radius, GLuint M, GLuint N);
+	void drawLine(float x1, float y1, float z1, float x2, float y2, float z2);
+	void drawCube(float x, float y, float z, float ll);
+    void drawSphere(float xx, float yy, float zz, float radius, int M, int N);
 
 public:
 	Skel *skel;
