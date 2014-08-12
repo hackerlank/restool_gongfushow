@@ -59,7 +59,7 @@ Skel::Skel(const char* filename)
 			m_file.read((char *)&bone.parent, sizeof(bone.parent));
 			uint32 len;
 			m_file.read((char *)&len, sizeof(len));
-			cout << "frame[" << i << "]" << bone.id << " " << bone.parent << " " << len << endl;
+			//cout << "frame[" << i << "]" << bone.id << " " << bone.parent << " " << len << endl;
 			for(int m = 0; m < len; m++)
 			{
 				uint32 child;
@@ -101,8 +101,11 @@ Skel::~Skel()
 
 void Skel::initWorldSpace(int frameId)
 {
+	for(int i = 0; i < m_worlds.size(); i++)
+		delete m_worlds[i];
 	m_worlds.clear();
 	m_worlds.resize(m_info.boneNames.size());
+
 	for(int i = 0; i < m_info.boneRoots.size(); i++)
 	{
 		initWorldSpace(frameId, m_info.boneRoots[i]);

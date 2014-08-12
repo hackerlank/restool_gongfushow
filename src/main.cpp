@@ -8,7 +8,7 @@ using namespace std;
 #define MAX_DELTA_T 0.01
 
 
-GLfloat alpha = 0.f, beta = 0.f, zoom = 5.f;
+GLfloat alpha = 180.f, beta = 30.f, zoom = 5.f;
 GLboolean locked = GL_FALSE;
 
 int cursorX;
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
     
-        glTranslatef(0.0, 0.0, -zoom);
+        glTranslatef(0.0, -1.0, -zoom);
         glRotatef(beta, 1.0, 0.0, 0.0);
         glRotatef(alpha, 0.0, 1.0, 0.0);
 
