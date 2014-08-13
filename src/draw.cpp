@@ -2,16 +2,16 @@
 #define PI 3.141592653
 
 
-#define SKEL_RES "res/2E0AB849.skel"
+#define SKEL_RES "res/skel/2/C2712C55.skel"
 
-#define SKIN_RES_MAX 2
+#define SKIN_RES_MAX 5
 const char *SKIN_RES[SKIN_RES_MAX] ={
-	//"res/avatargirl/wf01.skin",
+	"res/avatargirl/wf01.skin",
 	//"res/avatargirl/nvzhujue_shenti_up.skin",
 	//"res/avatargirl/nvzhujue_shenti_down.skin",
-	//"res/avatargirl/mhair/ff01_00.skin",
+	"res/avatargirl/mhair/ff01_00.skin",
 	"res/avatargirl/yifu/shangyi_1.skin",
-	//"res/avatargirl/yifu/kuzi_1.skin",
+	"res/avatargirl/yifu/kuzi_1.skin",
 	"res/avatargirl/yifu/xie_1.skin"
 };
 
@@ -67,7 +67,7 @@ void Draw::update(double dt)
 	if(frameDt > skel->m_frames[frameId].time)
 	{
 		frameDt = 0;
-		//frameId ++;
+		frameId ++;
 		if(frameId >= skel->m_frames.size())
 			frameId = 0;
 		
@@ -80,8 +80,9 @@ void Draw::update(double dt)
 		Skin *skin = skinList[s];
 	    for(int i = 0; i < skin->m_vertList.size(); i ++)
 	    {
-	    	vec3 raw = skin->m_vertList[i].pos;
-			Vec3f vv(raw.x, raw.y, raw.z);
+	    	//vec3 raw = skin->m_vertList[i].pos;
+			//Vec3f vv(raw.x, raw.y, raw.z);
+			Vec3f vv(0, 0, 0);
 	    	for(int j = 0; j < skin->m_vertList[i].bones.size(); j ++)
 	    	{
 	    		SkinBone bone = skin->m_vertList[i].bones[j];
