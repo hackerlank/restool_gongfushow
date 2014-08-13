@@ -2,15 +2,15 @@
 #define PI 3.141592653
 
 
-#define SKEL_RES "res/6214186D.skel"
+#define SKEL_RES "res/2E0AB849.skel"
 
-#define SKIN_RES_MAX 5
+#define SKIN_RES_MAX 2
 const char *SKIN_RES[SKIN_RES_MAX] ={
-	"res/avatargirl/wf01.skin",
-	"res/avatargirl/nvzhujue_shenti_up.skin",
-	"res/avatargirl/nvzhujue_shenti_down.skin",
-	"res/avatargirl/mhair/ff01_00.skin",
-	//"res/avatargirl/yifu/shangyi_1.skin",
+	//"res/avatargirl/wf01.skin",
+	//"res/avatargirl/nvzhujue_shenti_up.skin",
+	//"res/avatargirl/nvzhujue_shenti_down.skin",
+	//"res/avatargirl/mhair/ff01_00.skin",
+	"res/avatargirl/yifu/shangyi_1.skin",
 	//"res/avatargirl/yifu/kuzi_1.skin",
 	"res/avatargirl/yifu/xie_1.skin"
 };
@@ -54,15 +54,7 @@ void Draw::init()
 		Skin* skin = new Skin(SKIN_RES[i]);
 		skin->showHeadInfo();
 
-		int n = skin->m_vertList.size();
-		skin->drawRawVert.resize(n);
-		skin->drawNewVert.resize(n);
-		for(int j = 0; j < n; j ++)
-		{
-			vec3 v = skin->m_vertList[j].pos;
-			Vec3f vv(v.x, v.y, v.z);
-			skin->drawRawVert.push_back(vv);
-		}
+		skin->drawVert.resize(skin->m_vertList.size());
 
 		skinList.push_back(skin);
 	}
@@ -75,7 +67,7 @@ void Draw::update(double dt)
 	if(frameDt > skel->m_frames[frameId].time)
 	{
 		frameDt = 0;
-		frameId ++;
+		//frameId ++;
 		if(frameId >= skel->m_frames.size())
 			frameId = 0;
 		
@@ -88,17 +80,19 @@ void Draw::update(double dt)
 		Skin *skin = skinList[s];
 	    for(int i = 0; i < skin->m_vertList.size(); i ++)
 	    {
-	    	Vec3f vv = skin->drawRawVert[i]/100;
+	    	vec3 raw = skin->m_vertList[i].pos;
+			Vec3f vv(raw.x, raw.y, raw.z);
 	    	for(int j = 0; j < skin->m_vertList[i].bones.size(); j ++)
 	    	{
 	    		SkinBone bone = skin->m_vertList[i].bones[j];
 	    		Matrix4f trans = skel->getWorldSpace(bone.boneId);
 				Vec3f offset(bone.offset.x, bone.offset.y, bone.offset.z);
-				vv = vv + trans * offset * bone.weight /100;
+				vv = vv + (trans * offset) * bone.weight;
 	    	}
-			skin->drawNewVert[i].x = vv.x;
-	    	skin->drawNewVert[i].y = vv.y;
-	    	skin->drawNewVert[i].z = vv.z;
+			vv = vv/100;
+			skin->drawVert[i].x = vv.x;
+	    	skin->drawVert[i].y = vv.y;
+	    	skin->drawVert[i].z = vv.z;
 
 	    }
 	}
@@ -145,7 +139,7 @@ void Draw::drawSkel()
 void Draw::drawSkin(Skin *skin)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(vec3), &skin->drawNewVert[0]);
+	glVertexPointer(3, GL_FLOAT, sizeof(vec3), &skin->drawVert[0]);
 
 
 	for(int i = 0; i < skin->m_meshList.size(); i++)

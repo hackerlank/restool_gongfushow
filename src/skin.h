@@ -107,8 +107,7 @@ public:
 	vector<Material> m_mtlList;
 
 	//for drawing
-	vector<vec3> drawNewVert;
-	vector<Vec3f> drawRawVert;
+	vector<vec3> drawVert;
 };
 
 
