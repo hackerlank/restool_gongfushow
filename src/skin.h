@@ -4,6 +4,7 @@
 #include "define.h"
 #include "vertex.h"
 #include "material.h"
+#include "utMath.h"
 
 
 #pragma pack(4)
@@ -104,6 +105,10 @@ public:
 	vector<SkinVert> m_vertList;
 	vector<SkinMesh> m_meshList;
 	vector<Material> m_mtlList;
+
+	//for drawing
+	vector<vec3> drawNewVert;
+	vector<Vec3f> drawRawVert;
 };
 
 

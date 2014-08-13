@@ -76,9 +76,6 @@ SkinVert Skin::readSkinVert(int i)
 	}
 //	cout << endl;
 	
-	t.pos.x = t.pos.x/100;
-	t.pos.y = t.pos.y/100;
-	t.pos.z = t.pos.z/100;
 	return t;
 }
 

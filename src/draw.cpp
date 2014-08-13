@@ -53,6 +53,17 @@ void Draw::init()
 	{
 		Skin* skin = new Skin(SKIN_RES[i]);
 		skin->showHeadInfo();
+
+		int n = skin->m_vertList.size();
+		skin->drawRawVert.resize(n);
+		skin->drawNewVert.resize(n);
+		for(int j = 0; j < n; j ++)
+		{
+			vec3 v = skin->m_vertList[j].pos;
+			Vec3f vv(v.x, v.y, v.z);
+			skin->drawRawVert.push_back(vv);
+		}
+
 		skinList.push_back(skin);
 	}
 }
@@ -69,6 +80,27 @@ void Draw::update(double dt)
 			frameId = 0;
 		
 		skel->initWorldSpace(frameId);
+	}
+
+
+	for(int s = 0; s < skinList.size(); s ++)
+	{
+		Skin *skin = skinList[s];
+	    for(int i = 0; i < skin->m_vertList.size(); i ++)
+	    {
+	    	Vec3f vv = skin->drawRawVert[i]/100;
+	    	for(int j = 0; j < skin->m_vertList[i].bones.size(); j ++)
+	    	{
+	    		SkinBone bone = skin->m_vertList[i].bones[j];
+	    		Matrix4f trans = skel->getWorldSpace(bone.boneId);
+				Vec3f offset(bone.offset.x, bone.offset.y, bone.offset.z);
+				vv = vv + trans * offset * bone.weight /100;
+	    	}
+			skin->drawNewVert[i].x = vv.x;
+	    	skin->drawNewVert[i].y = vv.y;
+	    	skin->drawNewVert[i].z = vv.z;
+
+	    }
 	}
 
 }
@@ -113,7 +145,7 @@ void Draw::drawSkel()
 void Draw::drawSkin(Skin *skin)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].pos);
+	glVertexPointer(3, GL_FLOAT, sizeof(vec3), &skin->drawNewVert[0]);
 
 
 	for(int i = 0; i < skin->m_meshList.size(); i++)
