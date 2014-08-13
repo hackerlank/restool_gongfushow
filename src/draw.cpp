@@ -2,17 +2,18 @@
 #define PI 3.141592653
 
 
-#define SKEL_RES "res/skel/2/C2712C55.skel"
+#define SKEL_RES "res/skel/2/A186C74D.skel"
 
-#define SKIN_RES_MAX 5
+#define SKIN_RES_MAX 2
 const char *SKIN_RES[SKIN_RES_MAX] ={
 	"res/avatargirl/wf01.skin",
 	//"res/avatargirl/nvzhujue_shenti_up.skin",
 	//"res/avatargirl/nvzhujue_shenti_down.skin",
-	"res/avatargirl/mhair/ff01_00.skin",
-	"res/avatargirl/yifu/shangyi_1.skin",
-	"res/avatargirl/yifu/kuzi_1.skin",
-	"res/avatargirl/yifu/xie_1.skin"
+	//"res/avatargirl/mhair/ff01_00.skin",
+	//"res/avatargirl/yifu/shangyi_1.skin",
+	//"res/avatargirl/yifu/kuzi_1.skin",
+	//"res/avatargirl/yifu/xie_1.skin"
+	"res/skin/sz_22.skin"
 };
 
 
