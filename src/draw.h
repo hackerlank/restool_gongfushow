@@ -5,6 +5,7 @@
 
 #include "define.h"
 #include "skel.h"
+#include "skin.h"
 
 class Draw
 {
@@ -16,6 +17,8 @@ public:
 
 	void update(double dt);
 	void render();
+	void drawSkel();
+	void drawSkin(Skin *skin);
 
 	void drawAxes();
 	void drawLine(float x1, float y1, float z1, float x2, float y2, float z2);
@@ -23,6 +26,7 @@ public:
 
 public:
 	Skel *skel;
+	vector<Skin *> skinList;
 	int frameId;
 	double frameDt;
 };

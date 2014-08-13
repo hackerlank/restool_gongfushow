@@ -1,6 +1,23 @@
 #include "draw.h"
 #define PI 3.141592653
 
+
+#define SKEL_RES "res/6214186D.skel"
+
+#define SKIN_RES_MAX 5
+const char *SKIN_RES[SKIN_RES_MAX] ={
+	"res/avatargirl/wf01.skin",
+	"res/avatargirl/nvzhujue_shenti_up.skin",
+	"res/avatargirl/nvzhujue_shenti_down.skin",
+	"res/avatargirl/mhair/ff01_00.skin",
+	//"res/avatargirl/yifu/shangyi_1.skin",
+	//"res/avatargirl/yifu/kuzi_1.skin",
+	"res/avatargirl/yifu/xie_1.skin"
+};
+
+
+
+
 Draw::Draw()
 {
 
@@ -14,16 +31,30 @@ Draw::~Draw()
 		delete skel;
 		skel = NULL;
 	}
+
+	for(int i = 0; i < skinList.size(); i ++)
+		delete skinList[i];
+	skinList.clear();
 }
 
 
 void Draw::init()
 {
-	skel = new Skel("res/6214186D.skel");
-	skel->showHeadInfo();
-	skel->initWorldSpace(0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	frameId = 0;
 	frameDt = 0;
+
+	skel = new Skel(SKEL_RES);
+	skel->showHeadInfo();
+	skel->initWorldSpace(0);
+
+	for(int i = 0; i < SKIN_RES_MAX; i++)
+	{
+		Skin* skin = new Skin(SKIN_RES[i]);
+		skin->showHeadInfo();
+		skinList.push_back(skin);
+	}
 }
 
 void Draw::update(double dt)
@@ -43,6 +74,13 @@ void Draw::update(double dt)
 }
 
 void Draw::render()
+{
+	drawSkel();
+	for(int i = 0; i < skinList.size(); i ++)
+		drawSkin(skinList[i]);
+}
+
+void Draw::drawSkel()
 {
 	glColor3f(1.0f, 1.0f, 1.0f);	
 	drawAxes();
@@ -71,6 +109,22 @@ void Draw::render()
 
 	}
 }
+
+void Draw::drawSkin(Skin *skin)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].pos);
+
+
+	for(int i = 0; i < skin->m_meshList.size(); i++)
+	{
+		SkinMesh mesh = skin->m_meshList[i];
+		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
+	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
 
 void Draw::drawAxes()
 {
