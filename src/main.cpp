@@ -1,16 +1,19 @@
 #include <math.h>
 #include <iostream>
+#include "draw.h"
 #include <GL/glew.h>
 #define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
-#include "draw.h"
+
 using namespace std;
 
 #define MAX_DELTA_T 0.01
 
 
-GLfloat alpha = 180.f, beta = 30.f, zoom = 5.f;
-GLboolean locked = GL_FALSE;
+GLfloat alpha = 180.f, beta = 0.f, zoom = 200.f, tall = 100.f;
+GLboolean paused = GL_FALSE;
+GLboolean lockedL = GL_FALSE;
+GLboolean lockedR = GL_FALSE;
 
 int cursorX;
 int cursorY;
@@ -35,6 +38,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             glfwSetWindowShouldClose(window, GL_TRUE);
             break;
         case GLFW_KEY_SPACE:
+			paused = !paused;
             break;
         case GLFW_KEY_LEFT:
             alpha += 5;
@@ -49,12 +53,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             beta += 5;
             break;
         case GLFW_KEY_PAGE_UP:
-            zoom -= 0.25f;
+            zoom -= 25.0f;
             if (zoom < 0.f)
                 zoom = 0.f;
             break;
         case GLFW_KEY_PAGE_DOWN:
-            zoom += 0.25f;
+            zoom += 25.0f;
             break;
         default:
             break;
@@ -63,28 +67,47 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button != GLFW_MOUSE_BUTTON_LEFT)
-        return;
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+	{
 
-    if (action == GLFW_PRESS)
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        locked = GL_TRUE;
-    }
-    else
-    {
-        locked = GL_FALSE;
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
+    	if (action == GLFW_PRESS)
+    	{
+    	    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    	    lockedL = GL_TRUE;
+    	}
+    	else
+    	{
+    	    lockedL = GL_FALSE;
+    	    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    	}
+	}else
+	{
+		if (action == GLFW_PRESS)
+    	{
+    	    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    	    lockedR = GL_TRUE;
+    	}
+    	else
+    	{
+    	    lockedR = GL_FALSE;
+    	    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    	}
+
+	}
 }
 
 void cursor_position_callback(GLFWwindow* window, double x, double y)
 {
-    if (locked)
+    if (lockedL)
     {
         alpha += (GLfloat) (x - cursorX) / 10.f;
         beta += (GLfloat) (y - cursorY) / 10.f;
     }
+
+	if(lockedR)
+	{
+        tall += (GLfloat) (y - cursorY) / 2.f;
+	}
 
     cursorX = (int) x;
     cursorY = (int) y;
@@ -92,7 +115,7 @@ void cursor_position_callback(GLFWwindow* window, double x, double y)
 
 void scroll_callback(GLFWwindow* window, double x, double y)
 {
-    zoom += (float) y / 4.f;
+    zoom += (float) y *25.0f;
     if (zoom < 0)
         zoom = 0;
 }
@@ -110,7 +133,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // Change to the projection matrix and set our viewing volume
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, ratio, 1.0, 1024.0);
+    gluPerspective(60.0f, ratio, 1.0, 1024.0);
 }
 
 
@@ -149,7 +172,21 @@ int main(int argc, char* argv[])
     // Initialize OpenGL
 	glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0, 0, 0, 0);
+
+	//glEnable(GL_POINT_SMOOTH);
+	//glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+
+	//glEnable(GL_LINE_SMOOTH);
+	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+	//glEnable(GL_POLYGON_SMOOTH);
+	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+    glClearColor(0.3, 0.3, 0.3, 0.3);
 
     draw.init();
 
@@ -169,7 +206,8 @@ int main(int argc, char* argv[])
             dt = dt_total > MAX_DELTA_T ? MAX_DELTA_T : dt_total;
             dt_total -= dt;
 
-			draw.update(dt);
+			if(!paused)
+				draw.update(dt);
         }
 
         // Draw wave grid to OpenGL display
@@ -177,7 +215,7 @@ int main(int argc, char* argv[])
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
     
-        glTranslatef(0.0, -1.0, -zoom);
+        glTranslatef(0.0, -tall, -zoom);
         glRotatef(beta, 1.0, 0.0, 0.0);
         glRotatef(alpha, 0.0, 1.0, 0.0);
 

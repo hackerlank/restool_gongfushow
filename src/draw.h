@@ -1,11 +1,12 @@
 #ifndef __DRAW_H__
 #define __DRAW_H__
 
-#include <GLFW/glfw3.h>
 
 #include "define.h"
 #include "skel.h"
 #include "skin.h"
+
+#include <GLFW/glfw3.h>
 
 class Draw
 {

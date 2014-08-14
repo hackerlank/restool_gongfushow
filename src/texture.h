@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include "bitmap.h"
 #include "GL/glew.h"
+#include "bitmap.h"
 
     
 /**
@@ -40,7 +40,7 @@ public:
      */
     Texture(const Bitmap& bitmap,
             GLint minMagFiler = GL_LINEAR,
-            GLint wrapMode = GL_CLAMP_TO_EDGE);
+            GLint wrapMode = GL_REPEAT);
     
     /**
      Deletes the texture object with glDeleteTextures

@@ -2,18 +2,18 @@
 #define PI 3.141592653
 
 
-#define SKEL_RES "res/skel/2/C2712C55.skel"
+#define SKEL_RES "res/skel/2/A186C74D.skel"
 
-#define SKIN_RES_MAX 5
+#define SKIN_RES_MAX 2
 const char *SKIN_RES[SKIN_RES_MAX] ={
 	"res/avatargirl/wf01.skin",
 	//"res/avatargirl/nvzhujue_shenti_up.skin",
 	//"res/avatargirl/nvzhujue_shenti_down.skin",
-	"res/avatargirl/mhair/ff01_00.skin",
-	"res/avatargirl/yifu/shangyi_1.skin",
-	"res/avatargirl/yifu/kuzi_1.skin",
-	"res/avatargirl/yifu/xie_1.skin"
-	//"res/skin/sz_22.skin"
+	//"res/avatargirl/mhair/ff01_00.skin",
+	//"res/avatargirl/yifu/shangyi_1.skin",
+	//"res/avatargirl/yifu/kuzi_1.skin",
+	//"res/avatargirl/yifu/xie_1.skin",
+	"res/shizhuang/sz_22.skin"
 };
 
 
@@ -41,7 +41,7 @@ Draw::~Draw()
 
 void Draw::init()
 {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	frameId = 0;
 	frameDt = 0;
@@ -54,6 +54,25 @@ void Draw::init()
 	{
 		Skin* skin = new Skin(SKIN_RES[i]);
 		skin->showHeadInfo();
+		for(int j = 0; j < skin->m_mtlList.size(); j++)
+		{
+			char path[256] = "res/";
+			strcat(path, skin->m_mtlList[j].map[0] + 7);
+			for(int t = 0; t < strlen(path); t++)
+			{
+				if(path[t] == '\\')
+					path[t] = '/';
+				else
+					path[t] = tolower(path[t]);
+
+			}
+			cout << path << endl;
+
+			Bitmap bmp = Bitmap::bitmapFromFile(path);
+			//bmp.flipVertically();
+			Texture *tex = new Texture(bmp);
+			skin->m_texList.push_back(tex);
+		}
 
 		skinList.push_back(skin);
 	}
@@ -86,7 +105,6 @@ void Draw::update(double dt)
 				Vec3f offset(bone.offset.x, bone.offset.y, bone.offset.z);
 				vv = vv + (trans * offset) * bone.weight;
 	    	}
-			vv = vv/100;
 			skin->m_vertList[i].pos.x = vv.x;
 	    	skin->m_vertList[i].pos.y = vv.y;
 	    	skin->m_vertList[i].pos.z = vv.z;
@@ -98,8 +116,8 @@ void Draw::update(double dt)
 
 void Draw::render()
 {
-	drawSkel();
-	for(int i = 0; i < skinList.size(); i ++)
+	//drawSkel();
+	for(int i = 0; i < skinList.size(); i++)
 		drawSkin(skinList[i]);
 }
 
@@ -112,10 +130,10 @@ void Draw::drawSkel()
 	{
 		Matrix4f trans = skel->getWorldSpace(i);
 		Vec3f pos(0, 0, 0);
-		pos = trans * pos/100;
+		pos = trans * pos;
 
 		
-		glColor3f(1.0f, 0.0f, 0.0f);	
+		glColor3f(1.0f, 1.0f, 1.0f);	
 		drawCube(pos.x, pos.y, pos.z, 0.01);
 
 		BoneData data = skel->m_frames[frameId].boneDatas[i];
@@ -123,7 +141,7 @@ void Draw::drawSkel()
 		{
 			Matrix4f ctrans = skel->getWorldSpace(data.children[j]);
 			Vec3f cpos(0, 0, 0);
-			cpos = ctrans * cpos/100;
+			cpos = ctrans * cpos;
 		
 			glColor3f(0.0f, 1.0f, 0.0f);	
 			drawLine(pos.x, pos.y, pos.z, cpos.x, cpos.y, cpos.z);
@@ -141,12 +159,16 @@ void Draw::drawSkin(Skin *skin)
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].uv);
 
 
-	for(int i = 0; i < skin->m_meshList.size(); i++)
+	for(int i = skin->m_meshList.size() - 1; i >= 0; i--)
 	{
 		SkinMesh mesh = skin->m_meshList[i];
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, skin->m_texList[mesh.mtlId]->object());
 		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
 	}
+	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

@@ -4,7 +4,7 @@
 #include "define.h"
 #include "vertex.h"
 #include "material.h"
-#include "utMath.h"
+#include "texture.h"
 
 
 #pragma pack(4)
@@ -105,6 +105,7 @@ public:
 	vector<SkinVert> m_vertList;
 	vector<SkinMesh> m_meshList;
 	vector<Material> m_mtlList;
+	vector<Texture *> m_texList;
 };
 
 
