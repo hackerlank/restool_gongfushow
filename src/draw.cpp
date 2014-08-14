@@ -13,7 +13,13 @@ const char *SKIN_RES[SKIN_RES_MAX] ={
 	//"res/avatargirl/yifu/shangyi_1.skin",
 	//"res/avatargirl/yifu/kuzi_1.skin",
 	//"res/avatargirl/yifu/xie_1.skin",
-	"res/shizhuang/sz_22.skin"
+	//"res/shizhuang/sz_22.skin",
+	"res/shizhuang/sz_01.skin",
+	//"res/hat/fm46.skin",
+	//"res/lower/fk22.skin",
+	//"res/armonr/fs22.skin",
+	//"res/boot/fx22.skin",
+	//"res/selffashion/zs_43.skin",
 };
 
 
@@ -165,10 +171,12 @@ void Draw::drawSkin(Skin *skin)
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, skin->m_texList[mesh.mtlId]->object());
 		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
+
 	}
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

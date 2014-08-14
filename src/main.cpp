@@ -172,6 +172,7 @@ int main(int argc, char* argv[])
     // Initialize OpenGL
 	glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
 
 	//glEnable(GL_POINT_SMOOTH);
 	//glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);

@@ -1,6 +1,6 @@
 #ifndef __SKIN_H__
 #define __SKIN_H__
-
+#include <algorithm>
 #include "define.h"
 #include "vertex.h"
 #include "material.h"

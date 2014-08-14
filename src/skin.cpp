@@ -96,6 +96,8 @@ SkinMesh Skin::readSkinMesh(int idx)
 		m_file.read((char *)&t, sizeof(t));
 		m.baseFaces.push_back(t);
 	}
+
+	//reverse(m.baseFaces.begin(), m.baseFaces.end());
 	
 	m_file.read((char *)&m.lodNum, sizeof(m.lodNum));
 	for(int i = 0; i < 4; i++)
