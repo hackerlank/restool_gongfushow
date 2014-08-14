@@ -105,9 +105,6 @@ public:
 	vector<SkinVert> m_vertList;
 	vector<SkinMesh> m_meshList;
 	vector<Material> m_mtlList;
-
-	//for drawing
-	vector<vec3> drawVert;
 };
 
 

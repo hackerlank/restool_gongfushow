@@ -1,0 +1,5 @@
+for i in *.dds
+do
+	convert $i `basename $i .dds`.tga
+done
+

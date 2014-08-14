@@ -1,5 +1,6 @@
 #include <math.h>
 #include <iostream>
+#include <GL/glew.h>
 #define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
 #include "draw.h"
@@ -115,6 +116,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 int main(int argc, char* argv[])
 {
+	glewInit();
+
     GLFWwindow* window;
     double t, dt_total, t_old;
     int width, height;

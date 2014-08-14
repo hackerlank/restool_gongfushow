@@ -2,18 +2,18 @@
 #define PI 3.141592653
 
 
-#define SKEL_RES "res/skel/2/A186C74D.skel"
+#define SKEL_RES "res/skel/2/C2712C55.skel"
 
-#define SKIN_RES_MAX 2
+#define SKIN_RES_MAX 5
 const char *SKIN_RES[SKIN_RES_MAX] ={
 	"res/avatargirl/wf01.skin",
 	//"res/avatargirl/nvzhujue_shenti_up.skin",
 	//"res/avatargirl/nvzhujue_shenti_down.skin",
-	//"res/avatargirl/mhair/ff01_00.skin",
-	//"res/avatargirl/yifu/shangyi_1.skin",
-	//"res/avatargirl/yifu/kuzi_1.skin",
-	//"res/avatargirl/yifu/xie_1.skin"
-	"res/skin/sz_22.skin"
+	"res/avatargirl/mhair/ff01_00.skin",
+	"res/avatargirl/yifu/shangyi_1.skin",
+	"res/avatargirl/yifu/kuzi_1.skin",
+	"res/avatargirl/yifu/xie_1.skin"
+	//"res/skin/sz_22.skin"
 };
 
 
@@ -55,8 +55,6 @@ void Draw::init()
 		Skin* skin = new Skin(SKIN_RES[i]);
 		skin->showHeadInfo();
 
-		skin->drawVert.resize(skin->m_vertList.size());
-
 		skinList.push_back(skin);
 	}
 }
@@ -75,14 +73,11 @@ void Draw::update(double dt)
 		skel->initWorldSpace(frameId);
 	}
 
-
 	for(int s = 0; s < skinList.size(); s ++)
 	{
 		Skin *skin = skinList[s];
 	    for(int i = 0; i < skin->m_vertList.size(); i ++)
 	    {
-	    	//vec3 raw = skin->m_vertList[i].pos;
-			//Vec3f vv(raw.x, raw.y, raw.z);
 			Vec3f vv(0, 0, 0);
 	    	for(int j = 0; j < skin->m_vertList[i].bones.size(); j ++)
 	    	{
@@ -92,9 +87,9 @@ void Draw::update(double dt)
 				vv = vv + (trans * offset) * bone.weight;
 	    	}
 			vv = vv/100;
-			skin->drawVert[i].x = vv.x;
-	    	skin->drawVert[i].y = vv.y;
-	    	skin->drawVert[i].z = vv.z;
+			skin->m_vertList[i].pos.x = vv.x;
+	    	skin->m_vertList[i].pos.y = vv.y;
+	    	skin->m_vertList[i].pos.z = vv.z;
 
 	    }
 	}
@@ -141,7 +136,9 @@ void Draw::drawSkel()
 void Draw::drawSkin(Skin *skin)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(vec3), &skin->drawVert[0]);
+	glVertexPointer(3, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].pos);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].uv);
 
 
 	for(int i = 0; i < skin->m_meshList.size(); i++)
