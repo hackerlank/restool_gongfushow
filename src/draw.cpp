@@ -13,8 +13,8 @@ const char *SKIN_RES[SKIN_RES_MAX] ={
 	//"res/avatargirl/yifu/shangyi_1.skin",
 	//"res/avatargirl/yifu/kuzi_1.skin",
 	//"res/avatargirl/yifu/xie_1.skin",
-	"res/shizhuang/sz_22.skin",
-	//"res/shizhuang/sz_01.skin",
+	//"res/shizhuang/sz_22.skin",
+	"res/shizhuang/sz_01.skin",
 	//"res/hat/fm46.skin",
 	//"res/lower/fk22.skin",
 	//"res/armonr/fs22.skin",
@@ -165,28 +165,33 @@ void Draw::drawSkin(Skin *skin)
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].uv);
 
 
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_EQUAL, 1.0);
 
-	for(int i = skin->m_meshList.size() - 1; i >= 0; i--)
+	for(int i = 0; i < skin->m_meshList.size(); i++)
 	{
 		SkinMesh mesh = skin->m_meshList[i];
-		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, skin->m_texList[mesh.mtlId]->object());
-	
 
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.5);
 		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
 	
-		//glAlphaFunc(GL_LEQUAL, 0.9);
-		//glDepthMask(GL_FALSE);
-		//glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
-		//glDepthMask(GL_TRUE);
-		//glDisable(GL_BLEND);
-
-		glDisable(GL_ALPHA_TEST);
 	}
+
+	glAlphaFunc(GL_LESS, 1.0);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	for(int i = 0; i < skin->m_meshList.size(); i++)
+	{
+		SkinMesh mesh = skin->m_meshList[i];
+		glBindTexture(GL_TEXTURE_2D, skin->m_texList[mesh.mtlId]->object());
+		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
+	}
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

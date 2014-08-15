@@ -170,6 +170,7 @@ int main(int argc, char* argv[])
     framebuffer_size_callback(window, width, height);
 
     // Initialize OpenGL
+    glDisable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     //glDisable(GL_DEPTH_TEST);
