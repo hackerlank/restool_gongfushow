@@ -149,6 +149,7 @@ int main(int argc, char* argv[])
 
     if (!glfwInit())
 		return 1;
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
     window = glfwCreateWindow(800, 600, "Wave Simulation", NULL, NULL);
     if (!window)
@@ -170,6 +171,7 @@ int main(int argc, char* argv[])
     framebuffer_size_callback(window, width, height);
 
     // Initialize OpenGL
+	glEnable(GL_MULTISAMPLE_ARB);	
     glDisable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
