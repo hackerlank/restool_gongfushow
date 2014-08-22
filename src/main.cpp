@@ -173,6 +173,7 @@ int main(int argc, char* argv[])
     // Initialize OpenGL
 	glEnable(GL_MULTISAMPLE_ARB);	
     glDisable(GL_LIGHTING);
+    glDisable(GL_NORMALIZE);
 	glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
     //glDisable(GL_DEPTH_TEST);

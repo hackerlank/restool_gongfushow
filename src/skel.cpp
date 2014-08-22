@@ -3,6 +3,7 @@
 
 Skel::Skel(const char* filename)
 {
+	cout << "Load Skel: " << filename << endl;
 	strcpy(m_path, filename);
 	m_file.open(filename, ios::in|ios::binary);
 
@@ -46,11 +47,11 @@ Skel::Skel(const char* filename)
 
 		memset(frame.name, 0, 5);
 		m_file.read(frame.name, 4);
-		cout << "frame[" << i << "]" << frame.name << endl;
+		//cout << "frame[" << i << "]" << frame.name << endl;
 
 		uint32 boneNum;
 		m_file.read((char *)&boneNum, sizeof(boneNum));
-		cout << "frame[" << i << "]" << "boneDatas->" << boneNum << endl;
+		//cout << "frame[" << i << "]" << "boneDatas->" << boneNum << endl;
 
 		for(int j = 0; j < boneNum; j ++)
 		{
@@ -76,11 +77,11 @@ Skel::Skel(const char* filename)
 		}
 
 		m_file.read((char *)&frame.time, sizeof(frame.time));
-		cout << "frame[" << i << "]" << "time->" << frame.time<< endl;
+		//cout << "frame[" << i << "]" << "time->" << frame.time<< endl;
 
 		uint32 nodeNum;
 		m_file.read((char *)&nodeNum, sizeof(nodeNum));
-		cout << "frame[" << i << "]" << "boneNodes->" << nodeNum << endl;
+		//cout << "frame[" << i << "]" << "boneNodes->" << nodeNum << endl;
 		for(int k = 0; k < nodeNum; k ++)
 		{
 			BoneNode node;

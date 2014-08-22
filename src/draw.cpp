@@ -1,20 +1,46 @@
 #include "draw.h"
 #define PI 3.141592653
 
-
-#define SKEL_RES "res/skel/2/A186C74D.skel"
-
-#define SKIN_RES_MAX 2
+#define SKEL_RES_MAX	25
+const char* SKEL_RES[SKEL_RES_MAX] = {
+	"res/anigirl/comm.skel", 
+	"res/anigirl/comm.skel", 
+	"res/anigirl/bck1.skel",   
+	"res/anigirl/bek1.skel", 
+	"res/anigirl/lrn1.skel", 
+	"res/anigirl/lwk1.skel", 
+	"res/anigirl/qmw1.skel", 
+	"res/anigirl/rdy1.skel", 
+	"res/anigirl/rrn1.skel", 
+	"res/anigirl/rwk1.skel", 
+	"res/anigirl/sit1.skel", 
+	"res/anigirl/zb01.skel", 
+	"res/anigirl/zc01.skel", 
+	"res/anigirl/zd01.skel", 
+	"res/anigirl/ze21.skel", 
+	"res/anigirl/ze31.skel", 
+	"res/anigirl/zg01.skel", 
+	"res/anigirl/zh01.skel", 
+	"res/anigirl/zh21.skel", 
+	"res/anigirl/zh31.skel", 
+	"res/anigirl/zj01.skel", 
+	"res/anigirl/zn01.skel", 
+	"res/anigirl/zq01.skel", 
+	"res/anigirl/zs01.skel", 
+	"res/anigirl/zz01.skel", 
+};
+	
+#define SKIN_RES_MAX 5
 const char *SKIN_RES[SKIN_RES_MAX] ={
 	"res/avatargirl/wf01.skin",
 	//"res/avatargirl/nvzhujue_shenti_up.skin",
 	//"res/avatargirl/nvzhujue_shenti_down.skin",
-	//"res/avatargirl/mhair/ff01_00.skin",
-	//"res/avatargirl/yifu/shangyi_1.skin",
-	//"res/avatargirl/yifu/kuzi_1.skin",
-	//"res/avatargirl/yifu/xie_1.skin",
+	"res/avatargirl/mhair/ff01_00.skin",
+	"res/avatargirl/yifu/shangyi_1.skin",
+	"res/avatargirl/yifu/kuzi_1.skin",
+	"res/avatargirl/yifu/xie_1.skin",
 	//"res/shizhuang/sz_22.skin",
-	"res/shizhuang/sz_01.skin",
+	//"res/shizhuang/sz_01.skin",
 	//"res/hat/fm46.skin",
 	//"res/lower/fk22.skin",
 	//"res/armonr/fs22.skin",
@@ -52,7 +78,7 @@ void Draw::init()
 	frameId = 0;
 	frameDt = 0;
 
-	skel = new Skel(SKEL_RES);
+	skel = new Skel(SKEL_RES[0]);
 	skel->showHeadInfo();
 	skel->initWorldSpace(0);
 
@@ -82,6 +108,9 @@ void Draw::init()
 
 		skinList.push_back(skin);
 	}
+
+
+	cout << skel->m_path << endl;
 }
 
 void Draw::update(double dt)
@@ -161,6 +190,8 @@ void Draw::drawSkin(Skin *skin)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].pos);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glNormalPointer(GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].normal);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SkinVert), &skin->m_vertList[0].uv);
 
@@ -268,8 +299,6 @@ void Draw::drawCube(float x, float y, float z, float ll)
 	glVertex3f(x + ll, y - ll, z - ll);			// 四边形的右下顶点(右面)
 	glEnd();	
 }
-
-
 
 
 

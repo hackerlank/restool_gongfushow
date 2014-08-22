@@ -39,7 +39,7 @@ public:
      @param wrapMode GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, or GL_CLAMP_TO_BORDER
      */
     Texture(const Bitmap& bitmap,
-            GLint minMagFiler = GL_LINEAR,
+            GLint minMagFiler = GL_LINEAR_MIPMAP_LINEAR,
             GLint wrapMode = GL_REPEAT);
     
     /**
