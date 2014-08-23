@@ -13,6 +13,7 @@ Smm::Smm(const char* filename)
 
 	//read vertices
 	m_file.seekg(m_head.vertOffset);
+	m_vertForRender.resize(m_head.vertNum);
 	for(int i = 0; i < m_head.vertNum; i++)
 		m_vertList.push_back(readSmmVert(i));
 	cout << "read vert finish: " << hex << showbase << m_file.tellg() << endl;

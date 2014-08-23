@@ -3,7 +3,7 @@
 
 #define SKEL_RES_MAX	25
 const char* SKEL_RES[SKEL_RES_MAX] = {
-	"res/anigirl/comm.skel", 
+	"res/anigirl/zs01.skel", 
 	"res/anigirl/comm.skel", 
 	"res/anigirl/bck1.skel",   
 	"res/anigirl/bek1.skel", 
@@ -30,16 +30,16 @@ const char* SKEL_RES[SKEL_RES_MAX] = {
 	"res/anigirl/zz01.skel", 
 };
 	
-#define SKIN_RES_MAX 5
+#define SKIN_RES_MAX 2
 const char *SKIN_RES[SKIN_RES_MAX] ={
 	"res/avatargirl/wf01.skin",
 	//"res/avatargirl/nvzhujue_shenti_up.skin",
 	//"res/avatargirl/nvzhujue_shenti_down.skin",
-	"res/avatargirl/mhair/ff01_00.skin",
-	"res/avatargirl/yifu/shangyi_1.skin",
-	"res/avatargirl/yifu/kuzi_1.skin",
-	"res/avatargirl/yifu/xie_1.skin",
-	//"res/shizhuang/sz_22.skin",
+	//"res/avatargirl/mhair/ff01_00.skin",
+	//"res/avatargirl/yifu/shangyi_1.skin",
+	//"res/avatargirl/yifu/kuzi_1.skin",
+	//"res/avatargirl/yifu/xie_1.skin",
+	"res/shizhuang/sz_22.skin",
 	//"res/shizhuang/sz_01.skin",
 	//"res/hat/fm46.skin",
 	//"res/lower/fk22.skin",
@@ -48,7 +48,7 @@ const char *SKIN_RES[SKIN_RES_MAX] ={
 	//"res/selffashion/zs_43.skin",
 };
 
-
+#define WEAPON_RES "res/weapon/gou/g46.smm"
 
 
 Draw::Draw()
@@ -65,6 +65,12 @@ Draw::~Draw()
 		skel = NULL;
 	}
 
+	if(smm)
+	{
+		delete smm;
+		smm = NULL;
+	}
+
 	for(int i = 0; i < skinList.size(); i ++)
 		delete skinList[i];
 	skinList.clear();
@@ -79,8 +85,32 @@ void Draw::init()
 	frameDt = 0;
 
 	skel = new Skel(SKEL_RES[0]);
-	skel->showHeadInfo();
+	//skel->showHeadInfo();
 	skel->initWorldSpace(0);
+
+	smm = new Smm(WEAPON_RES);
+	//smm->showHeadInfo();
+	smm->initWorldSpace();
+	for(int i = 0; i < smm->m_mtlList.size(); i++)
+	{
+		char path[256] = "res/";
+		strcat(path, smm->m_mtlList[i].map[0] + 7);
+		for(int t = 0; t < strlen(path); t++)
+		{
+			if(path[t] == '\\')
+				path[t] = '/';
+			else
+				path[t] = tolower(path[t]);
+
+		}
+		cout << path << endl;
+
+		Bitmap bmp = Bitmap::bitmapFromFile(path);
+		//bmp.flipVertically();
+		Texture *tex = new Texture(bmp);
+		smm->m_texList.push_back(tex);
+	}
+
 
 	for(int i = 0; i < SKIN_RES_MAX; i++)
 	{
@@ -147,6 +177,20 @@ void Draw::update(double dt)
 	    }
 	}
 
+	
+	Matrix4f trans = skel->getWorldSpace(71);
+	//Matrix4f trans = smm->getWorldSpace(0);
+	for(int i = 0; i < smm->m_vertList.size(); i ++)
+	{
+		SmmVert sv = smm->m_vertList[i];
+		Vec3f vv(sv.pos.x, sv.pos.y, sv.pos.z);
+		
+		vv = trans * vv;
+
+		smm->m_vertForRender[i].x = vv.x;
+		smm->m_vertForRender[i].y = vv.y;
+		smm->m_vertForRender[i].z = vv.z;
+	}
 }
 
 void Draw::render()
@@ -154,6 +198,7 @@ void Draw::render()
 	//drawSkel();
 	for(int i = 0; i < skinList.size(); i++)
 		drawSkin(skinList[i]);
+	drawSmm();
 }
 
 void Draw::drawSkel()
@@ -218,6 +263,52 @@ void Draw::drawSkin(Skin *skin)
 	{
 		SkinMesh mesh = skin->m_meshList[i];
 		glBindTexture(GL_TEXTURE_2D, skin->m_texList[mesh.mtlId]->object());
+		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
+	}
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+}
+
+
+void Draw::drawSmm()
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, sizeof(vec3), &smm->m_vertForRender[0]);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glNormalPointer(GL_FLOAT, sizeof(SmmVert), &smm->m_vertList[0].normal);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(SmmVert), &smm->m_vertList[0].uv);
+
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_EQUAL, 1.0);
+
+	for(int i = 0; i < smm->m_meshList.size(); i++)
+	{
+		SmmMesh mesh = smm ->m_meshList[i];
+		glBindTexture(GL_TEXTURE_2D, smm->m_texList[mesh.mtlId]->object());
+
+		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
+	
+	}
+
+	glAlphaFunc(GL_LESS, 1.0);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	for(int i = 0; i < smm->m_meshList.size(); i++)
+	{
+		SmmMesh mesh = smm->m_meshList[i];
+		glBindTexture(GL_TEXTURE_2D, smm->m_texList[mesh.mtlId]->object());
 		glDrawElements(GL_TRIANGLES, mesh.baseFaces.size() * 3, GL_UNSIGNED_SHORT, &mesh.baseFaces[0]);
 	}
 	glDepthMask(GL_TRUE);

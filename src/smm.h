@@ -4,7 +4,7 @@
 #include "define.h"
 #include "utMath.h"
 #include "vertex.h"
-#include "material.h"
+#include "texture.h"
 #include "material.h"
 
 
@@ -104,7 +104,9 @@ public:
 	vector<Material> m_mtlList;
 	vector<SmmNode> m_nodeList;
 
+	vector<vec3>	  m_vertForRender;
 	vector<Matrix4f*> m_worlds;
+	vector<Texture *> m_texList;
 };
 
 
