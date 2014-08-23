@@ -1,10 +1,11 @@
 #include "draw.h"
 #define PI 3.141592653
 
-#define SKEL_RES_MAX	25
+#define SKEL_RES_MAX	28
 const char* SKEL_RES[SKEL_RES_MAX] = {
-	"res/anigirl/zs01.skel", 
 	"res/anigirl/comm.skel", 
+	"res/anigirl/comm.skel", 
+	"res/anigirl/std.skel", 
 	"res/anigirl/bck1.skel",   
 	"res/anigirl/bek1.skel", 
 	"res/anigirl/lrn1.skel", 
@@ -28,6 +29,8 @@ const char* SKEL_RES[SKEL_RES_MAX] = {
 	"res/anigirl/zq01.skel", 
 	"res/anigirl/zs01.skel", 
 	"res/anigirl/zz01.skel", 
+	"res/anigirl/z116.skel", 
+	"res/anigirl/z216.skel", 
 };
 	
 #define SKIN_RES_MAX 2
@@ -198,7 +201,7 @@ void Draw::render()
 	//drawSkel();
 	for(int i = 0; i < skinList.size(); i++)
 		drawSkin(skinList[i]);
-	drawSmm();
+	//drawSmm();
 }
 
 void Draw::drawSkel()
